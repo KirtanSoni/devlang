@@ -1,0 +1,21 @@
+Work Contribution for Milestone 1
+Writing Grammar:
+Dev: Assignments involving loop statements.
+Kirtan: Assignments involving conditional statements.
+Lakshmi Kruthi: Assignments involving assignment statements and expressions.
+Kalyani: Assignments involving variable declarations and data types.
+
+Document Creation:
+Dev: Worked on the Design section and contribution.txt file.
+Lakshmi Kruthi: Worked on Project description, Data Structure and grammar section.
+
+Setting up project in GitHub:
+Kirtan: Create the GitHub repository for the project.
+Kalyani: Initialize the repository with project files and structure
+
+-----------------------------------------------------------------------------------------------
+Future Work Contribution for Milestone 2
+1) Further elaborate design and implmentation of the language - Divided amongst all team members
+2) Lexical Analyser - Dev, Kirtan
+3) Parser - Lakshmi Kruthi, Kalyani
+4) Testing Scripts - Kirtan, Lakshmi Kruthi
