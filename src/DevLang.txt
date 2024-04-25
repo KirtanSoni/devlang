@@ -1,4 +1,6 @@
-procedure --> ['dev'], statement_pipeline, ['lang'].
+:- table conditional_logic/2, variable/2.
+
+procedure --> ['dev'], block, ['lang'].     %changed
 
 statement_pipeline --> statement, comma, statement_pipeline.
 statement_pipeline --> statement.
@@ -8,20 +10,20 @@ block --> ['{'], statement_pipeline, ['}'].
 statement --> conditional_statement| loops| assignment_statement| print_statements| null_statements.
 
 conditional_statement --> if_statement, block, ['otherwise'], block.
-conditional_statement --> ['?'], conditional_statement, [':'], statement_pipeline, [':'], statement_pipeline.
+conditional_statement --> ['?'], conditional_logic, [':'], statement_pipeline, [':'], statement_pipeline.
 
 if_statement --> ['if'], ['('], conditional_logic, [')'].
 
+conditional_logic --> bool.
 conditional_logic --> integer_comparison.
 conditional_logic --> logical_comparison.
-conditional_logic --> bool.
 
-integer_comparison --> ['integer'], int, comparison_operator, ['integer'], int.
+integer_comparison --> int, comparison_operator, int.
 comparison_operator --> ['>'] | ['<'] | ['=='].
 
 logical_comparison --> ['and'], ['('], conditional_logic, comma, conditional_logic, [')'].
 logical_comparison --> ['or'], ['('], conditional_logic, comma, conditional_logic, [')'].
-logical_comparison --> ['not'], ['('], conditional_logic, comma.
+logical_comparison --> ['not'], ['('], conditional_logic, comma, conditional_logic, [')'].
 
 loops --> loop_part, block.
 loops --> loopwith_part, block.
@@ -29,7 +31,7 @@ loops --> looprange_part, block.
 
 loop_part --> ['loop'], ['('], conditional_logic, [')'].
 loopwith_part --> ['loopwith'], ['('], assignment_statement, [':'], conditional_logic, [')'].
-looprange_part --> ['looprange'], ['('], assignment_statement, ['integer'], int, ['integer'], int, [')'].
+looprange_part --> ['looprange'], ['('], assignment_statement, int, int, [')'].
 
 assignment_statement --> variable, assignment_operator, literal.
 assignment_statement --> variable, assignment_operator, expression.
@@ -41,14 +43,15 @@ print_statements --> ['tout'], ['('], data_type, [')']| ['tout'], ['('], literal
 null_statements --> [' '].
 
 literal --> data_type.
-bool --> ['bool(true)'] | ['bool(false)'].
-int --> ['int('], numbers , [')'] | expression.
+bool --> ['bool'],['('],['true'],[')'] | ['bool'],['('],['false'],[')'].
+int --> ['int'],['('], numbers , [')'] | expression.
 var --> character.
 data_type --> bool | int | charr | variable.
-charr --> ['charr('], character, [')'].
+charr --> ['charr'],['('], characters, [')'].
 
+characters --> character, character| character.
 character--> lowercase_char | uppercase_char| numbers| character.
-expression_part --> ['integer'], int | variable.
+expression_part --> int | variable.
 
 expression --> ['['], expression_part, operator, expression_part, [']'].
 
@@ -60,3 +63,8 @@ comma --> [','].
 lowercase_char --> ['a'] | ['b'] | ['c'] | ['d'] | ['e'] | ['f'] | ['g'] | ['h'] | ['i'] | ['j'] | ['k'] | ['l'] | ['m'] | ['n'] | ['o'] | ['p'] | ['q'] | ['r'] | ['s'] | ['t'] | ['u'] | ['v'] | ['w'] | ['x'] | ['y'] | ['z'].
 uppercase_char --> ['A'] | ['B'] | ['C'] | ['D'] | ['E'] | ['F'] | ['G'] | ['H'] | ['I'] | ['J'] | ['K'] | ['L'] | ['M'] | ['N'] | ['O'] | ['P'] | ['Q'] | ['R'] | ['S'] | ['T'] | ['U'] | ['V'] | ['W'] | ['X'] | ['Y'] | ['Z'].
 numbers --> ['0'] | ['1'] | ['2'] | ['3'] | ['4'] | ['5'] | ['6'] | ['7'] | ['8'] | ['9'].
+
+
+% TODO String operations
+
+
