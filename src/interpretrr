@@ -1,0 +1,6 @@
+update(Key, Val, [], [(Key, Val)]).
+update(Key, Val, [(Key, _)|Tail], [(Key, Val)|Tail]).
+update(Key, Val, [(Key1, Val1) | Tail], [(Key1, Val1)| Env1]) :- Key \= Key1, update(Key, Val, Tail, Env1).
+
+lookup(Key, [(Key, Val)|_], Val).
+lookup(Key, [(Key1, _)|Tail], Val) :- Key1 \= Key, lookup(Key, Tail, Val).

@@ -1,4 +1,5 @@
 
+
 % DCG parse tree:
 :- table bool/3,int/3.
 
