@@ -1,4 +1,3 @@
-package org.example;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -6,6 +5,7 @@ import java.util.Scanner;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
