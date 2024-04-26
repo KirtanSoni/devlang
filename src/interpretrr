@@ -1,198 +1,98 @@
-% update(Key, Val, [], [(Key, Val)]).
-% update(Key, Val, [(Key, _)|Tail], [(Key, Val)|Tail]).
-% update(Key, Val, [(Key1, Val1) | Tail], [(Key1, Val1)| Env1]) :- Key \= Key1, update(Key, Val, Tail, Env1).
+eval_procedure(proc(X), EnvIn, EnvOut) --> eval_block(X, EnvIn, EnvOut).
+eval_block(blk(X), EnvIn, EnvOut) --> eval_statement_pipeline(X, EnvIn, EnvOut).
+eval_statement_pipeline(stmt_pipe(X,Z), EnvIn, EnvOut) --> eval_statement(X, EnvIn, EnvIn1), eval_statement_pipeline(Z, EnvIn1, EnvOut).  
+eval_statement_pipeline(stmt_pipe(X), , EnvIn, EnvOut) --> eval_statement(X, EnvIn, EnvOut).
 
-% lookup(Key, [(Key, Val)|_], Val).
-% lookup(Key, [(Key1, _)|Tail], Val) :- Key1 \= Key, lookup(Key, Tail, Val).
+% Data Types
+eval_data_type(data_type_structure(X), EnvIn, EnvOut) --> eval_bool(X, EnvIn, EnvOut). 
+eval_data_type(data_type_structure(X), EnvIn, EnvOut) --> eval_int(X, EnvIn, EnvOut). 
+eval_data_type(data_type_structure(X), EnvIn, EnvOut) --> eval_charr(X, EnvIn, EnvOut). 
 
-% % Program 
-% eval_procedure(proc(X), EnvIn, EnvOut) --> eval_block(X, EnvIn, EnvOut).
-% eval_block(blk(X), EnvIn, EnvOut) --> eval_statement_pipeline(X, EnvIn, EnvOut).
-% eval_statement_pipeline(stmt_pipe(X,Z) EnvIn, EnvOut) --> statement(X, EnvIn, EnvOut), eval_statement_pipeline(Z, EnvIn, EnvOut).  
-% eval_statement_pipeline(stmt_pipe(X), EnvIn, EnvOut) --> eval_statement(X, EnvIn, EnvOut).
+    % Boolean Data type 
+    eval_bool(bool_structure(X), EnvIn, EnvOut) --> eval_bool_val(X, EnvIn, EnvOut). 
+    eval_bool(bool_structure(X), EnvIn, EnvOut) --> eval_conditional_logic(X, EnvIn, EnvOut).
 
+    % literals
+    eval_bool_val(boolean(true), EnvIn, EnvOut).
+    eval_bool_val(boolean(false), EnvIn, EnvOut).
 
-% % Data Types
-% eval_data_type(data_type_structure(X), EnvIn, EnvOut) --> eval_bool(X, EnvIn, EnvOut). 
-% eval_data_type(data_type_structure(X), EnvIn, EnvOut) --> eval_int(X, EnvIn, EnvOut). 
-% eval_data_type(data_type_structure(X), EnvIn, EnvOut) --> eval_charr(X, EnvIn, EnvOut). 
+        % Conditional Expressions.
+        eval_conditional_logic(cond_log(X), EnvIn, EnvOut) --> eval_logical_comparison(X, EnvIn, EnvOut).
+        eval_conditional_logic(cond_log(X), EnvIn, EnvOut) --> eval_integer_comparison(X, EnvIn, EnvOut). 
+        eval_boolean_part(bool_part(X), EnvIn, EnvOut) --> eval_bool(X, EnvIn, EnvOut). 
+		%TODO
+        eval_boolean_part(bool_part(X), EnvIn, EnvOut) --> eval_variable(X, EnvIn, EnvOut),{bool(X)}.
 
-%     % Boolean Data type 
-%     bool(bool_structure(X)) --> ['bool'],['('],bool_val(X),[')']. 
-%     bool(bool_structure(X)) --> conditional_logic(X).
-    
-%     % literals
-%     bool_val(boolean(true))-->['true'].
-%     bool_val(boolean(false))-->['false'].
-
-%         % Conditional Expressions.
-%         conditional_logic(cond_log(X)) --> logical_comparison(X).
-%         conditional_logic(cond_log(X)) --> integer_comparison(X). 
-%         boolean_part(bool_part(X)) --> bool(X). 
-%         boolean_part(bool_part(X)) --> variable(X),{bool(X)}.
-
-%             % And, Or, Not Gates TODO ADD SUPPORT FOR VAR
-%             logical_comparison(log_comp(X,Z)) --> ['and'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
-%             logical_comparison(log_comp(X,Z)) --> ['or'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
-%             logical_comparison(log_comp(X)) --> ['not'], ['('], boolean_part(X) ,[')'].
-%             % integer comparison
-%             integer_comparison(int_comp(X,Y,Z)) --> int(X), comparison_operator(Y), int(Z).
-%                 % Comparison Operator
-%                 comparison_operator(comp_op(>)) --> ['>']. 
-%                 comparison_operator(comp_op(<)) --> ['<'].
-%                 comparison_operator(comp_op(=)) --> ['=='].
-
-    
-%     % Integer Defination  % Loop ( remove loop )
-%     int(int_structure(X)) --> ['int'],['('], numbers(X) , [')']. 
-%     int(int_structure(X)) --> expression(X).
-%     % literals
-%     numbers(num(N_str)) --> [N_str], {  re_match("^[0-9]+$", N_str)}.
-%         % arithematic Expression ( interger functions )
-%         expression_part(expr_part(X)) --> int(X). 
-%         expression_part(expr_part(X)) --> variable(X),{int(X)}.
-%         expression(expr(X,Y,Z)) --> ['['], expression_part(X), operator(Y), expression_part(Z), [']'].
-%         % Operator
-%             operator(op(+)) --> ['+']. 
-%             operator(op(-)) --> ['-']. 
-%             operator(op()) --> ['']. 
-%             operator(op(/)) --> ['/'].
-
-%     % String ( character Array )
-%     charr(char(X)) --> ['charr'],['('], string(X), [')'].
-%         %literals
-%         string(str(X)) --> ['"'],[X],['"'],{re_match("^[A-Za-z0-9]*$", X)}.
-        
-% % Statement types
-% eval_statement(stmt(X), EnvIn, EnvOut) --> eval_null_statements(X, EnvIn, EnvOut).
-% eval_statement(stmt(X), EnvIn, EnvOut) --> eval_print_statements(X, EnvIn, EnvOut).
-% eval_statement(stmt(X), EnvIn, EnvOut) --> eval_assignment_statement(X, EnvIn, EnvOut).
-% eval_statement(stmt(X), EnvIn, EnvOut) --> eval_conditional_statement(X, EnvIn, EnvOut).
-% eval_statement(stmt(X), EnvIn, EnvOut) --> eval_loops(X, EnvIn, EnvOut).
-
-%     %   Null Statements TODO
-%     eval_null_statements(nul_state(), EnvIn, EnvOut) --> [' '], { EnvOut = EnvIn}.
-
-%     %  Print Statements
-%     eval_print_statements(print_stmt(X), EnvIn, EnvOut) --> eval_data_type(X, EnvIn, EnvOut).
-%     eval_print_statements(print_stmt(X), EnvIn, EnvOut) --> eval_variable(X, EnvIn, EnvOut).
-
-%     % assignment Statements 
-%     eval_assignment_statement(assign_stmt(X,Z), EnvIn, EnvOut) --> eval_variable(X, EnvIn, EnvOut), eval_data_type(Z, EnvIn, EnvOut). 
-%         % Variable 
-%         eval_variable(variable_structure(I), EnvIn, EnvOut) --> [I], {re_match("^[a-z]+$", I)}.
-
-%     % Conditional Statements
-%     eval_conditional_statement(cond_stmt(X,Y,Z)) --> eval_bool(X), eval_block(Y), eval_block(Z).
-%     eval_conditional_statement(cond_stmt(X,Y,Z)) --> eval_bool(X), eval_statement_pipeline(Y), eval_statement_pipeline(Z).
-
-%     % Loops
-%     eval_loops(loops(X,Y)) --> eval_loop_part(X), eval_block(Y). 
-%     eval_loops(loops(X,Y)) --> eval_loopwith_part(X), eval_block(Y). 
-%     eval_loops(loops(X,Y)) --> eval_looprange_part(X), eval_block(Y).
-%         % while loop
-%         eval_loop_part(loop_part(X)) --> eval_conditional_logic(X).
-%         % for loop
-%         eval_loopwith_part(loop_with(X,Y)) --> eval_assignment_statement(X), eval_conditional_logic(Y).
-%         % range loop
-%         eval_looprange_part(loop_range(X,Z)) --> eval_assignment_statement(X),  eval_int(Z).
+            % And, Or, Not Gates TODO ADD SUPPORT FOR VAR
+            eval_logical_comparison(log_comp(X,Z), EnvIn, EnvOut) --> eval_boolean_part(X, EnvIn, EnvIn1), eval_boolean_part(Z, EnvIn1, EnvOut).
+            eval_logical_comparison(log_comp(X,Z), EnvIn, EnvOut) --> eval_boolean_part(X, EnvIn, EnvIn1), eval_boolean_part(Z, EnvIn1, EnvOut).
+            eval_logical_comparison(log_comp(X), EnvIn, EnvOut) --> eval_boolean_part(X, EnvIn, EnvOut).
+            % integer comparison
+            eval_integer_comparison(int_comp(X,Y,Z), EnvIn, EnvOut) --> eval_int(X, EnvIn, EnvIn1), eval_comparison_operator(Y, EnvIn1, EnvIn2), eval_int(Z, EnvIn2, EnvOut).
+                % Comparison Operator
+                eval_comparison_operator(comp_op(>)). 
+                eval_comparison_operator(comp_op(<)).
+                eval_comparison_operator(comp_op(=)).
 
 
-% Evaluator for the DCG parse tree with environment passing
+    % Integer Defination  % Loop ( remove loop )
+    eval_int(int_structure(X), EnvIn, EnvOut) --> eval_numbers(X, EnvIn, EnvOut). 
+    eval_int(int_structure(X), EnvIn, EnvOut) --> eval_expression(X, EnvIn, EnvOut).
+    % literals
+	%TODO
+    eval_numbers(num(N_str)) --> [N_str], {  re_match("^[0-9]+$", N_str)}.
+        % arithematic Expression ( interger functions )
+        eval_expression_part(expr_part(X), EnvIn, EnvOut) --> eval_int(X, EnvIn, EnvOut). 
+		%TODO
+        eval_expression_part(expr_part(X)) --> eval_variable(X, EnvIn, EnvOut),{int(X)}.
+        eval_expression(expr(X,Y,Z), EnvIn, EnvOut) --> eval_expression_part(X, EnvIn, EnvIn1), eval_operator(Y, EnvIn1, EnvIn2), eval_expression_part(Z,, EnvIn2, EnvOut).
+        % Operator
+            eval_operator(op(+)). 
+            eval_operator(op(-)). 
+            eval_operator(op(*)). 
+            eval_operator(op(/)).
 
-% Program evaluation
-eval(proc(X), EnvIn, EnvOut) :-
-    procedure(X, Block),
-    eval_block(Block, EnvIn, EnvOut).
+    % String ( character Array )
+    eval_charr(char(X), EnvIn, EnvOut) --> eval_string(X, EnvIn, EnvOut).
+        %literals
+		%TODO
+        eval_string(str(X)) --> {re_match("^[A-Za-z0-9]*$", X)}.
 
-% Block evaluation
-eval_block(blk(X), EnvIn, EnvOut) :-
-    statement_pipeline(X, EnvIn, EnvOut).
+% Statement types
+eval_statement(stmt(X), EnvIn, EnvOut) --> eval_null_statements(X, EnvIn, EnvOut).
+eval_statement(stmt(X), EnvIn, EnvOut) --> eval_print_statements(X, EnvIn, EnvOut).
+eval_statement(stmt(X), EnvIn, EnvOut) --> eval_assignment_statement(X, EnvIn, EnvOut).
+eval_statement(stmt(X), EnvIn, EnvOut) --> eval_conditional_statement(X, EnvIn, EnvOut).
+eval_statement(stmt(X), EnvIn, EnvOut) --> eval_loops(X, EnvIn, EnvOut).
 
-% Statement pipeline evaluation
-eval_statement_pipeline(stmt_pipe(X), EnvIn, EnvOut) :-
-    eval_statement(X, EnvIn, EnvOut).
-eval_statement_pipeline(stmt_pipe(X, Z), EnvIn, EnvOut) :-
-    eval_statement(X, EnvIn, EnvTmp),
-    eval_statement_pipeline(Z, EnvTmp, EnvOut).
+    %   Null Statements
+	%TODO:
+    eval_null_statements(nul_state(), EnvIn, EnvOut).
 
-% Data type evaluation
-eval_data_type(data_type_structure(X), EnvIn, EnvOut) :-
-    eval(X, EnvIn, EnvOut).
+    %  Print Statements
+    eval_print_statements(print_stmt(X), EnvIn, EnvOut) --> eval_data_type(X, EnvIn, EnvOut).
+    eval_print_statements(print_stmt(X), EnvIn, EnvOut) -->  eval_variable(X, EnvIn, EnvOut).
 
-% Boolean evaluation
-eval(bool_structure(X), EnvIn, EnvOut) :-
-    eval(X, EnvIn, EnvOut).
+    % assignment Statements 
+    eval_assignment_statement(assign_stmt(X,Z), EnvIn, EnvOut) --> eval_variable(X, EnvIn, EnvIn1), eval_data_type(Z, EnvIn1, EnvOut). 
+        % Variable 
+		%TODO
+        eval_variable(variable_structure(I), EnvIn, EnvOut) --> [I], {re_match("^[a-z]+$", I)}.
 
-% Boolean value evaluation
-eval_bool(boolean(true), _, true).
-eval_bool(boolean(false), _, false).
+    % Conditional Statements
+    eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) --> eval_bool(X, EnvIn, EnvIn1), eval_block(Y,EnvIn1, EnvIn2), eval_block(Z, EnvIn2, EnvOut).
+    eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) --> eval_bool(X, EnvIn, EnvIn1), eval_statement_pipeline(Y, EnvIn1, EnvIn2), eval_statement_pipeline(Z, EnvIn2, EnvOut).
 
-% Conditional logic evaluation
-eval_bool(cond_log(X), EnvIn, EnvOut) :-
-    eval(X, EnvIn, EnvOut).
-
-% Logical comparison evaluation
-eval_logical_comparison(log_comp(X, Z), EnvIn, EnvOut) :-
-    eval_boolean_part(X, EnvIn, _),
-    eval_boolean_part(Z, EnvIn, _),
-    EnvOut = EnvIn.
-eval_logical_comparison(log_comp(X), EnvIn, EnvOut) :-
-    eval_boolean_part(X, EnvIn, Res),
-    EnvOut = [result=Res|EnvIn].
-
-% Integer comparison evaluation 
-eval_integer_comparison(int_comp(X, CompOp, Z), EnvIn, EnvOut) :-
-    eval(X, EnvIn, Num1),
-    eval(Z, EnvIn, Num2),
-    eval(CompOp, Num1, Num2, Result),
-    EnvOut = [result=Result|EnvIn].
-
-% Integer evaluation
-eval(int_structure(X), EnvIn, EnvOut) :-
-    eval(X, EnvIn, EnvOut).
-eval(int(X), EnvIn, EnvOut) :-
-    eval(X, EnvIn, EnvOut).
-eval(numbers(num(N_str)), _, Result) :-
-    number_string(Result, N_str).
-eval(expression(expr(X, Op, Z)), EnvIn, EnvOut) :-
-    eval(X, EnvIn, Num1),
-    eval(Z, EnvIn, Num2),
-    eval(Op, Num1, Num2, Result),
-    EnvOut = [result=Result|EnvIn].
-
-% Operator evaluation
-eval_operator(op(+), Num1, Num2, Result) :- Result is Num1 + Num2.
-eval_operator(op(-), Num1, Num2, Result) :- Result is Num1 - Num2.
-eval_operator(op(/), Num1, Num2, Result) :- Result is Num1 / Num2.
-eval_operator(op(), _, _, '').
-
-% String evaluation
-eval(charr(X), _, X).
-
-% Statement evaluation
-eval_statement(stmt(X), EnvIn, EnvOut) :-
-    eval(X, EnvIn, EnvOut).
-eval_statement(null_statements(_), EnvIn, EnvOut) :-
-    EnvOut = EnvIn.
-eval_statement(print_statements(print_stmt(X)), EnvIn, EnvOut) :-
-    eval_data_type(X, EnvIn, EnvOut).
-eval_statement(print_statements(print_stmt(X)), EnvIn, EnvOut) :-
-    lookup(X, EnvIn, Value),
-    write(Value), nl,
-    EnvOut = EnvIn.
-eval_statement(assignment_statement(assign_stmt(variable_structure(Var), Data)), EnvIn, EnvOut) :-
-    eval_data_type(Data, EnvIn, Value),
-    update(Var, Value, EnvIn, EnvOut).
-eval_statement(conditional_statement(cond_stmt(Condition, Block1, Block2)), EnvIn, EnvOut) :-
-    eval_bool(Condition, EnvIn, true),
-    eval_block(Block1, EnvIn, EnvOut).
-eval_statement(conditional_statement(cond_stmt(Condition, Block1, Block2)), EnvIn, EnvOut) :-
-    eval_bool(Condition, EnvIn, false),
-    eval_block(Block2, EnvIn, EnvOut).
-eval_statement(loops(loops(X, Y)), EnvIn, EnvOut) :-
-    eval(X, EnvIn, _),
-    eval_block(Y, EnvIn, EnvOut).
+    % Loops
+    eval_loops(loops(X,Y), EnvIn, EnvOut) --> eval_loop_part(X, EnvIn, EnvIn1), eval_block(Y, EnvIn1, EnvOut). 
+    eval_loops(loops(X,Y), EnvIn, EnvOut) --> eval_loopwith_part(X, EnvIn, EnvIn1), eval_block(Y, EnvIn1, EnvOut). 
+    eval_loops(loops(X,Y), EnvIn, EnvOut) --> eval_looprange_part(X, EnvIn, EnvIn1), eval_block(Y, EnvIn1, EnvOut).
+        % while loop
+        eval_loop_part(loop_part(X), EnvIn, EnvOut) --> eval_conditional_logic(X, EnvIn, EnvOut).
+        % for loop
+        eval_loopwith_part(loop_with(X,Y), EnvIn, EnvOut) --> eval_assignment_statement(X, EnvIn, EnvIn1), eval_conditional_logic(Y, EnvIn1, EnvOut).
+        % range loop
+        eval_looprange_part(loop_range(X,Z), EnvIn, EnvOut) --> eval_assignment_statement(X, EnvIn, EnvIn1),  eval_int(Z, EnvIn1, EnvOut).
 
 update(Key, Val, [], [(Key, Val)]).
 update(Key, Val, [(Key, _)|Tail], [(Key, Val)|Tail]).
