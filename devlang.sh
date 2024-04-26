@@ -1,0 +1,14 @@
+#!/bin/bash
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <path>"
+    exit 1
+fi
+abs_input_file_path="$(pwd)/$1"
+# Tokenizer
+java_output=$(java -cp "$script_dir/src/Lexer/classes/antlr-runtime-4.13.1.jar:$script_dir/src/Lexer/classes" Main $abs_input_file_path)
+# Parser
+parsed_tree=$(swipl -s $script_dir/src/parser/Parser.pl -g "procedure(T, $java_output ,R), write(T),halt.")
+echo "$parsed_tree"
+# Interpreter
+
