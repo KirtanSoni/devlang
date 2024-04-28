@@ -80,8 +80,8 @@
             eval_print_statements(print_stmt(X), EnvIn, EnvOut) :-  eval_variable(X, EnvIn, EnvOut).
 
             % assignment Statements
-            eval_assignment_statement(assign_stmt(X, Value), EnvIn, EnvOut) :- eval_variable(X, EnvIn, EnvIn1), eval_data_type(Value, EnvIn, Val),  update(Var, Val, EnvIn, EnvOut) .
-            eval_assignment_statement(assign_stmt(X, Value), EnvIn, EnvOut) :- eval_variable(X, EnvIn, EnvIn1), eval_expression(Value, EnvIn, Val), update(Var, Val, EnvIn, EnvOut) .
+            eval_assignment_statement(assign_stmt(X, Value), EnvIn, EnvOut) :- eval_variable(X, EnvIn, Var), eval_data_type(Value, EnvIn, Val),  update(Var, Val, EnvIn, EnvOut) .
+            eval_assignment_statement(assign_stmt(X, Value), EnvIn, EnvOut) :- eval_variable(X, EnvIn, Var), eval_expression(Value, EnvIn, Val), update(Var, Val, EnvIn, EnvOut) .
                 % Variable
                 eval_variable(variable_structure(X), EnvIn, Val) :- lookup(X, EnvIn, Val).
 
