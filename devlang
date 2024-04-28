@@ -11,4 +11,5 @@ java_output=$(java -cp "$script_dir/src/Lexer/classes/antlr-runtime-4.13.1.jar:$
 parsed_tree=$(swipl -s $script_dir/src/parser/Parser.pl -g "procedure(T, $java_output ,R), write(T),halt.")
 echo "$parsed_tree"
 # Interpreter
-
+result=$(swipl -s $script_dir/src/interpreter.pl -g "eval_procedure($parsed_tree, R), halt.") 
+echo "$result"

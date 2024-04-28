@@ -1,0 +1,9 @@
+dev{
+    if(5>3){
+        tout(charr("hello"))
+    }
+    otherwise{
+        tout(charr("world"))
+    }
+
+}lang
