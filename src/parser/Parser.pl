@@ -76,6 +76,7 @@ statement(stmt(X)) --> loops(X).
 
     % assignment Statements 
     assignment_statement(assign_stmt(X,Z)) --> ['var'],variable(X),['='], data_type(Z). 
+    assignment_statement(assign_stmt(X,Z)) --> ['var'],variable(X),['='], variable(Z). 
         % Variable 
         variable(variable_structure(I)) --> [I], {re_match("^[a-z]+$", I)}.
 
