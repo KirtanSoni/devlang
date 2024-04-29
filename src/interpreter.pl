@@ -22,8 +22,8 @@
             eval_bool(bool_structure(X), EnvIn, R) :- eval_conditional_logic(X, EnvIn, R).
 
             % literals
-            eval_bool_val(boolean(true), EnvIn, EnvOut) :- update(bool, true, EnvIn, EnvOut).
-            eval_bool_val(boolean(false), EnvIn, EnvOut) :- update(bool, false, EnvIn, EnvOut).
+            eval_bool_val(boolean(true), EnvIn, true).
+            eval_bool_val(boolean(false), EnvIn, false).
 
                 % Conditional Expressions.
                 eval_conditional_logic(cond_log(X), EnvIn, EnvOut) :- eval_logical_comparison(X, EnvIn, EnvOut).
@@ -76,18 +76,18 @@
             eval_null_statements(nul_state()).
 
             %  Print Statements
-            eval_print_statements(print_stmt(X), EnvIn, EnvOut) :- eval_data_type(X, EnvIn, _), EnvOut = EnvIn.
-            eval_print_statements(print_stmt(X), EnvIn, EnvOut) :-  eval_variable(X, EnvIn, EnvOut).
+            eval_print_statements(print_stmt(X), EnvIn, EnvIn) :- eval_data_type(X, EnvIn, Value),write(Value),write("\n").
+            eval_print_statements(print_stmt(X), EnvIn, EnvIn) :-  eval_variable(X, EnvIn, Value),write(Value),write("\n").
 
             % assignment Statements
-            eval_assignment_statement(assign_stmt(X, Value), EnvIn, EnvOut) :- eval_variable(X, EnvIn, Var), eval_data_type(Value, EnvIn, Val),  update(Var, Val, EnvIn, EnvOut) .
-            eval_assignment_statement(assign_stmt(X, Value), EnvIn, EnvOut) :- eval_variable(X, EnvIn, Var), eval_expression(Value, EnvIn, Val), update(Var, Val, EnvIn, EnvOut) .
+            eval_assignment_statement(assign_stmt(variable_structure(X), Value), EnvIn, EnvOut) :- eval_data_type(Value, EnvIn, Val),  update(X, Val, EnvIn, EnvOut) .
+            eval_assignment_statement(assign_stmt(variable_structure(X), Value), EnvIn, EnvOut) :-  eval_expression(Value, EnvIn, Val), update(X, Val, EnvIn, EnvOut) .
                 % Variable
                 eval_variable(variable_structure(X), EnvIn, Val) :- lookup(X, EnvIn, Val).
 
             % Conditional Statements
-            eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvIn1), eval_block(Y,EnvIn1, EnvIn2), eval_block(Z, EnvIn2, EnvOut).
-            eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvIn1), eval_statement_pipeline(Y, EnvIn1, EnvIn2), eval_statement_pipeline(Z, EnvIn2, EnvOut).
+            eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvIn1), (EnvIn1 == "true" -> eval_block(Y,EnvIn1, EnvOut); eval_block(Z, EnvIn2, EnvOut)).
+            % eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvIn1), (EnvIn1 == false -> eval_block(Y,EnvIn1, EnvOut); eval_block(Z, EnvIn2, EnvOut)).
 
             % Loops
             eval_loops(loops(X,Y), EnvIn, EnvOut) :- eval_loop_part(X, EnvIn, EnvIn1), eval_block(Y, EnvIn1, EnvOut).

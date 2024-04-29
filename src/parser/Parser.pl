@@ -47,12 +47,12 @@ data_type(data_type_structure(X)) --> charr(X).
     numbers(num(N_str)) --> [N_str], {  re_match("^[0-9]+$", N_str)}.
         % arithematic Expression ( interger functions )
         expression_part(expr_part(X)) --> int(X). 
-        expression_part(expr_part(X)) --> variable(X),{int(X)}.
+        expression_part(expr_part(X)) --> variable(X).
         expression(expr(X,Y,Z)) --> ['['], expression_part(X), operator(Y), expression_part(Z), [']'].
         % Operator
             operator(op(+)) --> ['+']. 
             operator(op(-)) --> ['-']. 
-            operator(op()) --> ['']. 
+            operator(op(*)) --> ['*']. 
             operator(op(/)) --> ['/'].
 
     % String ( character Array )
@@ -82,7 +82,7 @@ statement(stmt(X)) --> loops(X).
 
     % Conditional Statements
     conditional_statement(cond_stmt(X,Y,Z)) --> ['if'], ['('], bool(X), [')'], block(Y), ['otherwise'], block(Z).
-    conditional_statement(cond_stmt(X,Y,Z)) --> ['?'], bool(X), [':'], statement_pipeline(Y), [':'], statement_pipeline(Z).
+    conditional_statement(cond_stmt(X,Y,Z)) --> ['?'], bool(X), [':'],  block(Y), [':'], block(Z).
 
     % Loops
     loops(loops(X,Y)) --> loop_part(X), block(Y). 
