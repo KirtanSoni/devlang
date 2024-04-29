@@ -44,7 +44,7 @@ SEMICOLON     : ';';
 IDENTIFIER   : [a-zA-Z]+;
 INTEGER      : [0-9]+;
 CHAR         : '\'' (~['\\])* '\'';
-STRING       :  [a-zA-Z0-9]+;
+STRING       :  '"' (~["\\])* '"';
 BOOL         : 'bool';
 
 
