@@ -7,6 +7,8 @@
 - Kirtan Soni (kgsoni@asu.edu)
 - Lakshmi Kruthi Hosamane Keshava Raman (lhosaman@asu.edu)
 
+Link to Our YouTube Video - https://youtu.be/qUkrN6yzoyI
+
 ---
 System Requirements : MacOS , Windows , Linus
 
