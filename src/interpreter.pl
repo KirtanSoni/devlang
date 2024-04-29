@@ -36,9 +36,11 @@
                     eval_logical_comparison(and_log_comp(X,Z), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), eval_boolean_part(Z, EnvIn1, R2) . %, R = and( R1,R2 ) 
                     eval_logical_comparison(or_log_comp(X,Z), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), eval_boolean_part(Z, EnvIn1, R2).%, R = or( R1,R2 ) 
                     eval_logical_comparison(not_log_comp(X), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), R = not(R1) .
-                    % integer comparison
-                    eval_integer_comparison(int_comp(X, Op, Z), EnvIn, R) :- eval_int(X, EnvIn, ValX), eval_int(Z, EnvIn, ValZ), eval_comparison_operator(Op, ValX, ValZ, R).
-
+                    
+                    eval_comparison_part(comp_part(X), EnvIn, R) :- eval_int(X, EnvIn, R). 
+           		    eval_comparison_part(comp_part(X), EnvIn, R) :- eval_variable(X, EnvIn, R).
+                    eval_integer_comparison(int_comp(X, Op, Z), EnvIn, R) :- eval_comparison_part(X, EnvIn, ValX), eval_comparison_part(Z, EnvIn, ValZ), eval_comparison_operator(Op, ValX, ValZ, R).
+                    
                     % Comparison Operator
                         eval_comparison_operator(comp_op(>), X, Z, R ) :- (X > Z -> R = true; R = false).
                         eval_comparison_operator(comp_op(<), X, Z, R) :- (X < Z -> R = true; R = false).
@@ -90,12 +92,16 @@
             % eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvIn1), (EnvIn1 == false -> eval_block(Y,EnvIn1, EnvOut); eval_block(Z, EnvIn2, EnvOut)).
 
             % Loops
-            eval_loops(loops(X,Y), EnvIn, EnvOut) :- eval_loop_part(X, EnvIn, EnvIn1), eval_block(Y, EnvIn1, EnvOut).
-            eval_loops(loops(X,Y), EnvIn, EnvOut) :- eval_loopwith_part(X, EnvIn, EnvIn1), eval_block(Y, EnvIn1, EnvOut).
-            eval_loops(loops(X,Y), EnvIn, EnvOut) :- eval_looprange_part(X, EnvIn, EnvIn1), eval_block(Y, EnvIn1, EnvOut).
-                % while loop
-                eval_loop_part(loop_part(X), EnvIn, EnvOut) :- eval_conditional_logic(X, EnvIn, EnvOut).
+            eval_loops(loops(X,Y), EnvIn, EnvOut) :- eval_loop_part(X, EnvIn, EnvIn1,R), ( R== true -> eval_block(Y, EnvIn1, EnvIn2),eval_loops(loops(X,Y), EnvIn2, EnvOut);EnvOut = EnvIn).
                 % for loop
-                eval_loopwith_part(loop_with(X,Y), EnvIn, EnvOut) :- eval_assignment_statement(X, EnvIn, EnvIn1), eval_conditional_logic(Y, EnvIn1, EnvOut).
+                eval_loop_part(loop_part(X), EnvIn, EnvIn,R) :- eval_conditional_logic(X, EnvIn, R).
+
+
+            eval_loops(loops(loop_with(X,Y),Z), EnvIn, EnvOut) :-  eval_assignment_statement(X, EnvIn, EnvIn1), eval_loopwith_part(Y,Z, EnvIn1, EnvOut)
+                % while loop
+                eval_loopwith_part(X,Y, EnvIn, EnvOut) :- eval_conditional_logic(X, EnvIn, R), (R == true -> eval_block(Y, EnvIn, EnvIn2),eval_loopwith_part(X,Y,EnvIn2,EnvOut) ; EnvOut = EnvIn).
+
+
+            eval_loops(loops(X,Y), EnvIn, EnvOut) :- eval_looprange_part(X, EnvIn, EnvIn1,R), eval_block(Y, EnvIn1, EnvOut).
                 % range loop
-                eval_looprange_part(loop_range(X,Z), EnvIn, EnvOut) :- eval_assignment_statement(X, EnvIn, EnvIn1),  eval_int(Z, EnvIn1, EnvOut).
+                eval_looprange_part(loop_range(X,Z), EnvIn, EnvOut,R) :- eval_assignment_statement(X, EnvIn, EnvIn1),  eval_int(Z, EnvIn1, EnvOut).

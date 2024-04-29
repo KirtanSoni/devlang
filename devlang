@@ -5,6 +5,8 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 abs_input_file_path="$(pwd)/$1"
+
+
 # Tokenizer
 java_output=$(java -cp "$script_dir/src/Lexer/classes/antlr-runtime-4.13.1.jar:$script_dir/src/Lexer/classes" Main $abs_input_file_path)
 # Parser

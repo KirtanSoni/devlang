@@ -1,5 +1,4 @@
 // Generated from C:/Users/kalya/Desktop/Spring_Semester/502/DevLang-Project/DevLang/src/main/java/org/example/CustomLanguageLexer.g4 by ANTLR 4.13.1
-package org.example;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

@@ -1,5 +1,5 @@
 dev
 {
-    tout( bool ( false )) 
+    tout(charr("Hello world!")) 
 }
 lang

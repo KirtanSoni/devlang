@@ -1,9 +1,22 @@
 dev{
-    if(not(int(3) == int(3))){
+
+ var x = int(3) ,
+    if(not( x == int(3))){
         tout(charr("hello"))
     }
     otherwise{
         tout(charr("world"))
     }
+    
+    
+     , 
 
+
+
+    ?(int(3) == int(3)):{
+        tout(charr("hello"))
+    }:
+    {
+        tout(charr("world"))
+    }
 }lang

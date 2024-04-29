@@ -1,4 +1,3 @@
-
 % DCG parse tree:
 :- table bool/3,int/3.
 
@@ -33,7 +32,9 @@ data_type(data_type_structure(X)) --> charr(X).
             logical_comparison(or_log_comp(X,Z)) --> ['or'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
             logical_comparison(not_log_comp(X)) --> ['not'], ['('], boolean_part(X) ,[')'].
             % integer comparison
-            integer_comparison(int_comp(X,Y,Z)) --> int(X), comparison_operator(Y), int(Z).
+            comparison_part(comp_part(X)) --> int(X). 
+            comparison_part(comp_part(X)) --> variable(X).
+            integer_comparison(int_comp(X,Y,Z)) --> comparison_part(X), comparison_operator(Y), comparison_part(Z).
                 % Comparison Operator
                 comparison_operator(comp_op(>)) --> ['>']. 
                 comparison_operator(comp_op(<)) --> ['<'].
@@ -44,7 +45,7 @@ data_type(data_type_structure(X)) --> charr(X).
     int(int_structure(X)) --> ['int'],['('], numbers(X) , [')']. 
     int(int_structure(X)) --> expression(X).
     % literals
-    numbers(num(N_str)) --> [N_str], {  re_match("^[0-9]+$", N_str)}.
+    numbers(num(N_str)) --> [N_str], {  re_match("^-?[0-9]+$", N_str)}.
         % arithematic Expression ( interger functions )
         expression_part(expr_part(X)) --> int(X). 
         expression_part(expr_part(X)) --> variable(X).
@@ -58,7 +59,7 @@ data_type(data_type_structure(X)) --> charr(X).
     % String ( character Array )
     charr(char(X)) --> ['charr'],['('], string(X), [')'].
         %literals
-        string(str(X)) --> ['"'],[X],['"'],{re_match("^[A-Za-z0-9]*$", X)}.
+        string(str(X)) --> [X].
         
 % Statement types
 statement(stmt(X)) --> null_statements(X).
@@ -68,7 +69,7 @@ statement(stmt(X)) --> conditional_statement(X).
 statement(stmt(X)) --> loops(X).
 
     %   Null Statements
-    null_statements(nul_state()) --> [' '].
+    null_statements(nul_state()) --> [';'].
 
     %  Print Statements
     print_statements(print_stmt(X)) --> ['tout'], ['('], data_type(X), [')'].
@@ -82,7 +83,7 @@ statement(stmt(X)) --> loops(X).
 
     % Conditional Statements
     conditional_statement(cond_stmt(X,Y,Z)) --> ['if'], ['('], bool(X), [')'], block(Y), ['otherwise'], block(Z).
-    conditional_statement(cond_stmt(X,Y,Z)) --> ['?'], bool(X), [':'],  block(Y), [':'], block(Z).
+    conditional_statement(cond_stmt(X,Y,Z)) --> ['?'],['('], bool(X), [')'], [':'],  block(Y), [':'], block(Z).
 
     % Loops
     loops(loops(X,Y)) --> loop_part(X), block(Y). 

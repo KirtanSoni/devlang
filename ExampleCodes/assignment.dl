@@ -4,7 +4,7 @@ dev
     var b = bool(true) ,
    
     var x = [ int(5) + int(6) ] ,
-    var x = [ int(5) + x ] ,
+    var x = [ int(5) - x ] ,
     
     
     tout( x ) ,
