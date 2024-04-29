@@ -97,7 +97,7 @@
                 eval_loop_part(loop_part(X), EnvIn, EnvIn,R) :- eval_conditional_logic(X, EnvIn, R).
 
 
-            eval_loops(loops(loop_with(X,Y),Z), EnvIn, EnvOut) :-  eval_assignment_statement(X, EnvIn, EnvIn1), eval_loopwith_part(Y,Z, EnvIn1, EnvOut)
+            eval_loops(loops(loop_with(X,Y),Z), EnvIn, EnvOut) :-  eval_assignment_statement(X, EnvIn, EnvIn1), eval_loopwith_part(Y,Z, EnvIn1, EnvOut).
                 % while loop
                 eval_loopwith_part(X,Y, EnvIn, EnvOut) :- eval_conditional_logic(X, EnvIn, R), (R == true -> eval_block(Y, EnvIn, EnvIn2),eval_loopwith_part(X,Y,EnvIn2,EnvOut) ; EnvOut = EnvIn).
 
