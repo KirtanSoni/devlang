@@ -94,5 +94,5 @@ statement(stmt(X)) --> loops(X).
         % for loop
         loopwith_part(loop_with(X,Y)) --> ['loopwith'], ['('], assignment_statement(X), [':'], conditional_logic(Y), [')'].
         % range loop
-        looprange_part(loop_range(X,Z)) --> ['looprange'], ['('], assignment_statement(X), [':'] ,Z, [')'],{ int(Z) }.
+        looprange_part(loop_range(X,Z)) --> ['looprange'], ['('], assignment_statement(X), [':'] ,int(Z), [')'].
 

@@ -102,6 +102,6 @@
                 eval_loopwith_part(X,Y, EnvIn, EnvOut) :- eval_conditional_logic(X, EnvIn, R), (R == true -> eval_block(Y, EnvIn, EnvIn2),eval_loopwith_part(X,Y,EnvIn2,EnvOut) ; EnvOut = EnvIn).
 
 
-            eval_loops(loops(X,Y), EnvIn, EnvOut) :- eval_looprange_part(X, EnvIn, EnvIn1,R), eval_block(Y, EnvIn1, EnvOut).
+            eval_loops(loops(loop_range(X,Y),Z), EnvIn, EnvOut) :- eval_assignment_statement(X, EnvIn, EnvIn1), eval_looprange_part(variable_structure(X),Y,Z, EnvIn1, EnvOut)
                 % range loop
-                eval_looprange_part(loop_range(X,Z), EnvIn, EnvOut,R) :- eval_assignment_statement(X, EnvIn, EnvIn1),  eval_int(Z, EnvIn1, EnvOut).
+                eval_looprange_part(assign_stmt(X,_),Y,Z, EnvIn, EnvOut) :-  eval_variable(X,EnvIn,R), eval_int(Z, EnvIn, R1),(R<R1->  eval_block(Y, EnvIn, EnvIn1),update(X,R+1,EnvIn1,EnvIn2),eval_looprange_part(assign_stmt(X,_),Y,Z,EnvIn2,EnvOut);EnvOut = EnvIn).

@@ -1,10 +1,6 @@
 dev{
-    
-
-
-    loopwith(var x = int(5): x < int(10) )
+    looprange(var x = int(5) : int(10))
     {
-        var x = [ x + int(1) ] ,
         tout(x)
     }
 }lang
