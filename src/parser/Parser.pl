@@ -26,12 +26,12 @@ data_type(data_type_structure(X)) --> charr(X).
         conditional_logic(cond_log(X)) --> logical_comparison(X).
         conditional_logic(cond_log(X)) --> integer_comparison(X). 
         boolean_part(bool_part(X)) --> bool(X). 
-        boolean_part(bool_part(X)) --> variable(X),{bool(X)}.
+        boolean_part(bool_part(X)) --> variable(X).
 
             % And, Or, Not Gates TODO ADD SUPPORT FOR VAR
-            logical_comparison(log_comp(X,Z)) --> ['and'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
-            logical_comparison(log_comp(X,Z)) --> ['or'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
-            logical_comparison(log_comp(X)) --> ['not'], ['('], boolean_part(X) ,[')'].
+            logical_comparison(and_log_comp(X,Z)) --> ['and'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
+            logical_comparison(or_log_comp(X,Z)) --> ['or'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
+            logical_comparison(not_log_comp(X)) --> ['not'], ['('], boolean_part(X) ,[')'].
             % integer comparison
             integer_comparison(int_comp(X,Y,Z)) --> int(X), comparison_operator(Y), int(Z).
                 % Comparison Operator
@@ -47,12 +47,12 @@ data_type(data_type_structure(X)) --> charr(X).
     numbers(num(N_str)) --> [N_str], {  re_match("^[0-9]+$", N_str)}.
         % arithematic Expression ( interger functions )
         expression_part(expr_part(X)) --> int(X). 
-        expression_part(expr_part(X)) --> variable(X),{int(X)}.
+        expression_part(expr_part(X)) --> variable(X).
         expression(expr(X,Y,Z)) --> ['['], expression_part(X), operator(Y), expression_part(Z), [']'].
         % Operator
             operator(op(+)) --> ['+']. 
             operator(op(-)) --> ['-']. 
-            operator(op()) --> ['']. 
+            operator(op(*)) --> ['*']. 
             operator(op(/)) --> ['/'].
 
     % String ( character Array )
@@ -76,12 +76,13 @@ statement(stmt(X)) --> loops(X).
 
     % assignment Statements 
     assignment_statement(assign_stmt(X,Z)) --> ['var'],variable(X),['='], data_type(Z). 
+    assignment_statement(assign_stmt(X,Z)) --> ['var'],variable(X),['='], variable(Z). 
         % Variable 
         variable(variable_structure(I)) --> [I], {re_match("^[a-z]+$", I)}.
 
     % Conditional Statements
     conditional_statement(cond_stmt(X,Y,Z)) --> ['if'], ['('], bool(X), [')'], block(Y), ['otherwise'], block(Z).
-    conditional_statement(cond_stmt(X,Y,Z)) --> ['?'], bool(X), [':'], statement_pipeline(Y), [':'], statement_pipeline(Z).
+    conditional_statement(cond_stmt(X,Y,Z)) --> ['?'], bool(X), [':'],  block(Y), [':'], block(Z).
 
     % Loops
     loops(loops(X,Y)) --> loop_part(X), block(Y). 
@@ -92,5 +93,5 @@ statement(stmt(X)) --> loops(X).
         % for loop
         loopwith_part(loop_with(X,Y)) --> ['loopwith'], ['('], assignment_statement(X), [':'], conditional_logic(Y), [')'].
         % range loop
-        looprange_part(loop_range(X,Z)) --> ['looprange'], ['('], assignment_statement(X),  int(Z), [')'].
+        looprange_part(loop_range(X,Z)) --> ['looprange'], ['('], assignment_statement(X), [':'] ,Z, [')'],{ int(Z) }.
 

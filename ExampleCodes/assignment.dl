@@ -1,0 +1,16 @@
+dev
+{
+    var string = charr("hello") ,
+    var b = bool(true) ,
+   
+    var x = [ int(5) + int(6) ] ,
+    var x = [ int(5) + x ] ,
+    
+    
+    tout( x ) ,
+    tout ( b ) ,
+    tout( string ) ,
+    tout( charr("true") ) 
+
+}
+lang

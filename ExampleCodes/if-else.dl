@@ -1,0 +1,9 @@
+dev{
+    if(not(int(3) == int(3))){
+        tout(charr("hello"))
+    }
+    otherwise{
+        tout(charr("world"))
+    }
+
+}lang

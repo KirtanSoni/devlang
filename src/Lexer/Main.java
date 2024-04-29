@@ -1,4 +1,3 @@
-package org.example;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -6,6 +5,7 @@ import java.util.Scanner;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,17 +26,17 @@ public class Main {
         return inputBuilder.toString(); // Convert StringBuilder to String
     }
     public static void main(String[] args) {
-//        // Create an input stream from a stringtemplate
-//        String filePath = args[1];
-//        String input = readFileToString(filePath);
-        String input  = "dev\n" +
-                "{\n" +
-                " if (bool(true))\n" +
-                "    {tout (int(5))}\n" +
-                " otherwise\n" +
-                "    { tout(charr(\"kirtan\"))}\n" +
-                " }\n" +
-                " lang";
+       // Create an input stream from a stringtemplate
+       String filePath = args[0];
+       String input = readFileToString(filePath);
+        // String input  = "dev\n" +
+        //         "{\n" +
+        //         " if (bool(true))\n" +
+        //         "    {tout (int(5))}\n" +
+        //         " otherwise\n" +
+        //         "    { tout(charr(\"kirtan\"))}\n" +
+        //         " }\n" +
+        //         " lang";
         CharStream inputStream = CharStreams.fromString(input);
 
         //generateLexer("src/main/java/org/example/CustomLanguageLexer.g4", "src/main/java/org/example/generated");
@@ -51,9 +51,8 @@ public class Main {
             if(token.getType() != Token.EOF) {
                 tokenList.add("'" + token.getText() + "'");
             }
-            System.out.println(tokenList);
         } while (token.getType() != Token.EOF);
-        writeOutput(tokenList,"src/main/resources/output/output.txt");
+        System.out.println(tokenList);
 
    }
 
