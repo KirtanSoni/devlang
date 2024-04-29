@@ -19,3 +19,12 @@ Future Work Contribution for Milestone 2
 2) Lexical Analyser - Dev, Kirtan
 3) Parser - Lakshmi Kruthi, Kalyani
 4) Testing Scripts - Kirtan, Lakshmi Kruthi
+
+-----------------------------------------------------------------------------------------------
+Work Contribution for Milestone 2
+1) Checking the design and implementing of the language - Kruthi and Kirtan
+2) Creating the Parser - Kirtan and Dev
+3) Lexical Analyzer - Kalyani and Kruthi
+4) Evaluator - Kruthi, Kirtan, Dev, Kalyani
+5) Creating and Testing Sample Programs - Dev and Kalyani
+6) Making Presentation and YouTube Video - Kruthi, Kirtan, Dev, Kalyani
