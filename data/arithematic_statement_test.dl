@@ -1,0 +1,10 @@
+
+dev{
+    var x = int(7) ,
+    var y = int(8) ,
+
+    tout([ x + y]) ,
+    tout([ x - y]) ,
+    tout([ x * y]) ,
+    tout([ x / y]) 
+}lang

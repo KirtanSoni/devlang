@@ -1,6 +1,0 @@
-dev{
-    looprange(var x = int(5) : int(10))
-    {
-        tout(x)
-    }
-}lang

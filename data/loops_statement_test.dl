@@ -1,0 +1,23 @@
+dev{
+    var y = int(0) ,
+
+    tout(charr("Testing Loop with range")) ,
+    looprange(var x = int(5) : int(10))
+    {
+        tout(x)
+    }
+    ,
+    tout(charr("Testing While loop")) ,
+    loop (y < int(5))
+    {
+       var y = [ y + int(1) ] ,
+        tout(y)
+    }
+    ,
+    tout(charr("Testing for Loop")) ,
+    loopwith(var z = int(0) : z < int(5) )
+    {
+        var z =  [ z + int(1) ] ,
+        tout(z)
+    }
+}lang

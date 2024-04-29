@@ -22,8 +22,8 @@
                 eval_bool(bool_structure(X), EnvIn, R) :- eval_conditional_logic(X, EnvIn, R).
 
                 % literals
-                eval_bool_val(boolean(true), EnvIn, true).
-                eval_bool_val(boolean(false), EnvIn, false).
+                eval_bool_val(boolean(true), _, true).
+                eval_bool_val(boolean(false), _, false).
 
                     % Conditional Expressions.
                     eval_conditional_logic(cond_log(X), EnvIn, EnvOut) :- eval_logical_comparison(X, EnvIn, EnvOut).
@@ -33,9 +33,9 @@
                     eval_boolean_part(bool_part(X), EnvIn, R) :- eval_variable(X, EnvIn, R).
 
                         % And, Or, Not Gates TODO ADD SUPPORT FOR VAR
-                        eval_logical_comparison(and_log_comp(X,Z), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), eval_boolean_part(Z, EnvIn1, R2) . %, R = and( R1,R2 ) 
-                        eval_logical_comparison(or_log_comp(X,Z), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), eval_boolean_part(Z, EnvIn1, R2).%, R = or( R1,R2 ) 
-                        eval_logical_comparison(not_log_comp(X), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), R = not(R1) .
+                        eval_logical_comparison(and_log_comp(X,Z), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), eval_boolean_part(Z, EnvIn, R2), ((R1 == R2, R2==true) -> R = true; R = false). %, R = and( R1,R2 ) 
+                        eval_logical_comparison(or_log_comp(X,Z), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), eval_boolean_part(Z, EnvIn, R2), ((R1 == R2, R2==false) -> R = false; R = true).%, R = or( R1,R2 ) 
+                        eval_logical_comparison(not_log_comp(X), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1),(R1 == true -> R = false;R = true).
                         
                         eval_comparison_part(comp_part(X), EnvIn, R) :- eval_int(X, EnvIn, R). 
                         eval_comparison_part(comp_part(X), EnvIn, R) :- eval_variable(X, EnvIn, R).
@@ -88,20 +88,16 @@
                     eval_variable(variable_structure(X), EnvIn, Val) :- lookup(X, EnvIn, Val).
 
                 % Conditional Statements
-                eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvIn1),(EnvIn1 == true -> eval_block(Y,EnvIn1, EnvOut); eval_block(Z, EnvIn2, EnvOut)).
+                eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, R),(R == true -> eval_block(Y,EnvIn, EnvOut); eval_block(Z, EnvIn, EnvOut)).
                 % eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvIn1), (EnvIn1 == false -> eval_block(Y,EnvIn1, EnvOut); eval_block(Z, EnvIn2, EnvOut)).
 
                 % Loops
                 eval_loops(loops(X,Y), EnvIn, EnvOut) :- eval_loop_part(X, EnvIn, EnvIn1,R), ( R== true -> eval_block(Y, EnvIn1, EnvIn2),eval_loops(loops(X,Y), EnvIn2, EnvOut);EnvOut = EnvIn).
+                eval_loops(loops(loop_with(X,Y),Z), EnvIn, EnvOut) :-  eval_assignment_statement(X, EnvIn, EnvIn1), eval_loopwith_part(Y,Z, EnvIn1, EnvOut).
+                eval_loops(loops(loop_range(X,Y),Z), EnvIn, EnvOut) :- eval_assignment_statement(X, EnvIn, EnvIn1), eval_looprange_part(X,Y,Z, EnvIn1, EnvOut). 
                     % for loop
                     eval_loop_part(loop_part(X), EnvIn, EnvIn,R) :- eval_conditional_logic(X, EnvIn, R).
-
-
-                eval_loops(loops(loop_with(X,Y),Z), EnvIn, EnvOut) :-  eval_assignment_statement(X, EnvIn, EnvIn1), eval_loopwith_part(Y,Z, EnvIn1, EnvOut).
                     % while loop
                     eval_loopwith_part(X,Y, EnvIn, EnvOut) :- eval_conditional_logic(X, EnvIn, R), (R == true -> eval_block(Y, EnvIn, EnvIn2),eval_loopwith_part(X,Y,EnvIn2,EnvOut) ; EnvOut = EnvIn).
-
-
-                eval_loops(loops(loop_range(X,Y),Z), EnvIn, EnvOut) :- eval_assignment_statement(X, EnvIn, EnvIn1), eval_looprange_part(X,Y,Z, EnvIn1, EnvOut). 
                     % range loop
                     eval_looprange_part(assign_stmt(variable_structure(X),N),Y,Z, EnvIn, EnvOut) :-  eval_variable(variable_structure(X),EnvIn,R), eval_int(Y, EnvIn, R1),(R<R1->  eval_block(Z, EnvIn, EnvIn1),R3 is R+1 ,update(X,R3,EnvIn1,EnvIn2),eval_looprange_part(assign_stmt(variable_structure(X),N),Y,Z,EnvIn2,EnvOut);EnvOut = EnvIn).

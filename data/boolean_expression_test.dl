@@ -1,0 +1,14 @@
+dev{
+    tout(and(bool(true) , bool(false))) ,
+    tout(and(bool(true) , bool(true))) ,
+
+    tout(or(bool(false) ,  bool(false))) ,
+    tout(or(bool(true) , bool(false))) ,
+
+    tout(not(bool(true))) ,
+    tout(not(bool(false))) ,
+
+    tout(int(5)>int(3)) ,
+    tout(int(5)==int(5)) ,
+    tout(int(5)<int(3)) 
+}lang
