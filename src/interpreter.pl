@@ -5,7 +5,7 @@
         lookup(Key, [(Key, Val)|_], Val).
         lookup(Key, [(Key1, _)|Tail], Val) :- Key1 \= Key, lookup(Key, Tail, Val).
 
-        eval_procedure(proc(X),Env2) :- eval_block(X, [], Env2).
+        eval_procedure(proc(X),EnvOut) :- eval_block(X, [], EnvOut).
         eval_block(blk(X), EnvIn, EnvOut) :- eval_statement_pipeline(X, EnvIn, EnvOut).
         eval_statement_pipeline(stmt_pipe(X,Z), EnvIn, EnvOut) :- eval_statement(X, EnvIn, EnvIn1), eval_statement_pipeline(Z, EnvIn1, EnvOut).
         eval_statement_pipeline(stmt_pipe(X), EnvIn, EnvOut) :- eval_statement(X, EnvIn, EnvOut).
@@ -40,9 +40,9 @@
                     eval_integer_comparison(int_comp(X, Op, Z), EnvIn, R) :- eval_int(X, EnvIn, ValX), eval_int(Z, EnvIn, ValZ), eval_comparison_operator(Op, ValX, ValZ, R).
 
                     % Comparison Operator
-                        eval_comparison_operator(comp_op(>), X, Z, _R) :- X > Z.
-                        eval_comparison_operator(comp_op(<), X, Z, _R) :- X < Z.
-                        eval_comparison_operator(comp_op(=), X, Z, _R) :- X =:= Z.
+                        eval_comparison_operator(comp_op(>), X, Z, R ) :- (X > Z -> R = true; R = false).
+                        eval_comparison_operator(comp_op(<), X, Z, R) :- (X < Z -> R = true; R = false).
+                        eval_comparison_operator(comp_op(=), X, Z, R) :- (X == Z -> R = true; R = false).
 
 
             % Integer Defination  % Loop ( remove loop )
@@ -86,7 +86,7 @@
                 eval_variable(variable_structure(X), EnvIn, Val) :- lookup(X, EnvIn, Val).
 
             % Conditional Statements
-            eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvIn1), (EnvIn1 == "true" -> eval_block(Y,EnvIn1, EnvOut); eval_block(Z, EnvIn2, EnvOut)).
+            eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvIn1),(EnvIn1 == true -> eval_block(Y,EnvIn1, EnvOut); eval_block(Z, EnvIn2, EnvOut)).
             % eval_conditional_statement(cond_stmt(X,Y,Z), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvIn1), (EnvIn1 == false -> eval_block(Y,EnvIn1, EnvOut); eval_block(Z, EnvIn2, EnvOut)).
 
             % Loops
