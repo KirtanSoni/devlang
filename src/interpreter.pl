@@ -27,15 +27,15 @@
 
                 % Conditional Expressions.
                 eval_conditional_logic(cond_log(X), EnvIn, EnvOut) :- eval_logical_comparison(X, EnvIn, EnvOut).
-
                 eval_conditional_logic(cond_log(X), EnvIn, R) :- eval_integer_comparison(X, EnvIn, R).
-                eval_boolean_part(bool_part(X), EnvIn, EnvOut) :- eval_bool(X, EnvIn, EnvOut).
-                eval_boolean_part(bool_part(X), EnvIn, R) :- eval_variable(X, EnvIn, Val), eval_bool(bool_structure(Val), EnvIn, R).
+
+                eval_boolean_part(bool_part(X), EnvIn, R) :- eval_bool(X, EnvIn, R).
+                eval_boolean_part(bool_part(X), EnvIn, R) :- eval_variable(X, EnvIn, R).
 
                     % And, Or, Not Gates TODO ADD SUPPORT FOR VAR
-                    eval_logical_comparison(log_comp(X,Z), EnvIn, EnvOut) :- eval_boolean_part(X, EnvIn, EnvIn1), eval_boolean_part(Z, EnvIn1, EnvOut).
-                    eval_logical_comparison(log_comp(X,Z), EnvIn, EnvOut) :- eval_boolean_part(X, EnvIn, EnvIn1), eval_boolean_part(Z, EnvIn1, EnvOut).
-                    eval_logical_comparison(log_comp(X), EnvIn, EnvOut) :- eval_boolean_part(X, EnvIn, EnvOut).
+                    eval_logical_comparison(and_log_comp(X,Z), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), eval_boolean_part(Z, EnvIn1, R2) . %, R = and( R1,R2 ) 
+                    eval_logical_comparison(or_log_comp(X,Z), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), eval_boolean_part(Z, EnvIn1, R2).%, R = or( R1,R2 ) 
+                    eval_logical_comparison(not_log_comp(X), EnvIn, R) :- eval_boolean_part(X, EnvIn, R1), R = not(R1) .
                     % integer comparison
                     eval_integer_comparison(int_comp(X, Op, Z), EnvIn, R) :- eval_int(X, EnvIn, ValX), eval_int(Z, EnvIn, ValZ), eval_comparison_operator(Op, ValX, ValZ, R).
 

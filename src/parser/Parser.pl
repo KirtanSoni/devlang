@@ -26,12 +26,12 @@ data_type(data_type_structure(X)) --> charr(X).
         conditional_logic(cond_log(X)) --> logical_comparison(X).
         conditional_logic(cond_log(X)) --> integer_comparison(X). 
         boolean_part(bool_part(X)) --> bool(X). 
-        boolean_part(bool_part(X)) --> variable(X),{bool(X)}.
+        boolean_part(bool_part(X)) --> variable(X).
 
             % And, Or, Not Gates TODO ADD SUPPORT FOR VAR
-            logical_comparison(log_comp(X,Z)) --> ['and'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
-            logical_comparison(log_comp(X,Z)) --> ['or'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
-            logical_comparison(log_comp(X)) --> ['not'], ['('], boolean_part(X) ,[')'].
+            logical_comparison(and_log_comp(X,Z)) --> ['and'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
+            logical_comparison(or_log_comp(X,Z)) --> ['or'], ['('], boolean_part(X), [','], boolean_part(Z), [')'].
+            logical_comparison(not_log_comp(X)) --> ['not'], ['('], boolean_part(X) ,[')'].
             % integer comparison
             integer_comparison(int_comp(X,Y,Z)) --> int(X), comparison_operator(Y), int(Z).
                 % Comparison Operator

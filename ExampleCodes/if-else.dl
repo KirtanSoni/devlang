@@ -1,5 +1,5 @@
 dev{
-    if(int(3) == int(3)){
+    if(not(int(3) == int(3))){
         tout(charr("hello"))
     }
     otherwise{
